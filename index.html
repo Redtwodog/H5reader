@@ -18,7 +18,6 @@
 			    background:#e9dfc7;
 			}
 			.m-read-content{
-			    font-size:14px;
 			    color:#555;
 			    line-height:31px;
 			    padding:15px;
@@ -407,7 +406,7 @@
             var Doc=$(document);
             var RootContainer=$("#fiction_container");
             var Body=$("body");
-            var Content_p=$(".m-read-content>p");
+            
             var readerModel;
             var readerUI;
             var default_font_size;
@@ -416,7 +415,7 @@
             var Chapter_total;
             default_backgroundcolor=Util.StorageGetter("background_color")?Util.StorageGetter("background_color"):"#F0D3D2";
             default_font_size=Util.StorageGetter("font_size")?parseInt(Util.StorageGetter("font_size")):14;
-            Content_p.css("font-size",default_font_size);
+
             Body.css("background",default_backgroundcolor);
             function main(){
                 //入口函数
@@ -425,6 +424,7 @@
                 readerModel.init(function(data){
                     readerUI(data);
                 });
+                
                 EventHanlder();
             }
             function ReaderModel(){
@@ -438,13 +438,13 @@
                 //ajax交互
                 var getSectionInfo=function(callback){
                     Chapter_id=Util.StorageGetter("Chapter_id")||1;
-                    $.get("chapter.json",function(data){
+                    $.get("data/chapter.json",function(data){
                         Chapter_total=data.chapters.length;
                         callback && callback();
                     },"json")
                 }
                 var getSectionContent=function(Chapter_id,callback){
-                    $.get("data"+Chapter_id+".json",function(data){
+                    $.get("data/data"+Chapter_id+".json",function(data){
                         if(data.result==0){
                             var url=data.jsonp;
                             Util.getBeson(url,function(data){
@@ -491,6 +491,7 @@
                 }
                 return function(data){
                     container.html(parseChapterData(data))
+                    $(".m-read-content>p").css("font-size",default_font_size);
                 }
             }
             function EventHanlder(){
@@ -522,20 +523,22 @@
                      }
                 })
                 Dom.font_size_bt_small.click(function(){
-                    if(parseInt(Content_p.css("font-size"))<12){
+                    var Content_p_js=$("#fiction_container>p")
+                    if(parseInt(Content_p_js.css("font-size"))<12){
                         return;
                     }else{
                         default_font_size-=1;
-                        Content_p.css("font-size",default_font_size);
+                        Content_p_js.css("font-size",default_font_size);
                         Util.StorageSetter("font_size",default_font_size);
                     }
                 })
                 Dom.font_size_bt_large.click(function(){
-                    if(parseInt(Content_p.css("font-size"))>20){
+                    var Content_p_js=$("#fiction_container>p")
+                    if(parseInt(Content_p_js.css("font-size"))>20){
                         return;
                     }else{
                         default_font_size+=1;
-                        Content_p.css("font-size",default_font_size)
+                        Content_p_js.css("font-size",default_font_size)
                         Util.StorageSetter("font_size",default_font_size);
                     }
                 })
@@ -590,7 +593,7 @@
             }
             main();
 		 })()
-			
+		 
 		</script>
 	</body>
 </html>
